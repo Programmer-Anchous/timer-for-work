@@ -1,15 +1,18 @@
 import time
-from shell_functions import clear
-from playsound import playsound
 import subprocess
 
+from shell_functions import clear
+from tg_message import send_message
 
-def start_work():
-    subprocess.run(["notify-send", "Timer", "work"])
+
+def start_work(message):
+    send_message(f"work: {message}")
+    subprocess.run(["notify-send", "Timer ", " work "])
 
 
-def start_break():
-    subprocess.run(["notify-send", "Timer", "Break"])
+def start_break(message):
+    send_message(f"break {message}")
+    subprocess.run(["notify-send", "Timer ", " break "])
 
 
 class Clock:
@@ -40,7 +43,7 @@ class Canvas:
         self.current = 0
 
     def start(self):
-        start_work()
+        start_work(self.timers[self.current_timer][1])
         while True:
             self.current += 1
             if self.current >= self.timers[self.current_timer][0] * 60:
@@ -50,9 +53,9 @@ class Canvas:
                     self.current_timer = 0
 
                 if self.timers[self.current_timer][2] == 0:
-                    start_work()
+                    start_work(self.timers[self.current_timer][1])
                 else:
-                    start_break()
+                    start_break(self.timers[self.current_timer][1])
             self.information()
             self.clock.tick()
 
@@ -65,8 +68,3 @@ class Canvas:
         print(f"   {timer_text}")
         print(f"{timer_time} minutes")
         print(f"{minutes}:{seconds}")
-
-
-time.sleep(1)
-canvas = Canvas()
-canvas.start()
